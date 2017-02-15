@@ -27,6 +27,7 @@ Recipes.create(
 
 // when the root of this router is called with GET, return
 // all current ShoppingList items
+/*
 app.get('/shopping-list', (req, res) => {
   res.json(ShoppingList.get());
 });
@@ -52,6 +53,7 @@ app.post('/shopping-list', jsonParser, (req, res) => {
 // item id in updated item object match. if problems with any
 // of that, log error and send back status code 400. otherwise
 // call `ShoppingList.update` with updated item.
+
 app.put('/shopping-list/:id', jsonParser, (req, res) => {
   const requiredFields = ['name', 'budget', 'id'];
   for (let i=0; i<requiredFields.length; i++) {
@@ -77,19 +79,47 @@ app.put('/shopping-list/:id', jsonParser, (req, res) => {
   });
   res.status(204).json(updatedItem);
 });
+*/
+app.get('/recipes', (req, res) => {
+  res.json(Recipes.get());
+});
 
+
+app.put('/recipes/:id', jsonParser, (req, res) => {
+  const requiredFields = ['name', 'id', 'ingredients'];
+  for (let i=0; i<requiredFields.length; i++) {
+    const field = requiredFields[i];
+    if (!(field in req.body)) {
+      const message = `Missing \`${field}\` in request body`
+      console.error(message);
+      return res.status(400).send(message);
+    }
+  }
+  if (req.params.id !== req.body.id) {
+    const message = (
+      `Request path id (${req.params.ud}) and request body id (${req.body.id}) mjust match`);
+    console.error(message);
+    return res.status(400).send(message);
+  }
+  console.log(`Updating recipe list itme \`${req.param.id}\``);
+  const updatedItem = Recipes.update({
+    name: req.body.name,
+    id: req.params.id,
+    ingredients: req.body.ingredients
+  });
+  res.status(204).json(updatedItem);
+});
 // when DELETE request comes in with an id in path,
 // try to delete that item from ShoppingList.
+/*
 app.delete('/shopping-list/:id', (req, res) => {
   ShoppingList.delete(req.params.id);
   console.log(`Deleted shopping list item \`${req.params.ID}\``);
   res.status(204).end();
 });
+*/
 
 
-app.get('/recipes', (req, res) => {
-  res.json(Recipes.get());
-});
 
 app.post('/recipes', jsonParser, (req, res) => {
   // ensure `name` and `budget` are in request body
